@@ -1,31 +1,68 @@
-escpos pkg
+# escpos #
+This is a simple [Golang](http://www.golang.org/project) package that provides
+[ESC-POS](https://en.wikipedia.org/wiki/ESC/P) library functions to help with
+sending control codes to a ESC-POS capable printer
 
-# printer.go
-type Printer struct 
+# Acknowledgments
+This project is heavily based on the following GitHub repos:
+- [kenshaw-escpos](https://github.com/kenshaw/escpos)
+- [alexbrainman-printer](https://github.com/alexbrainman/printer)
+- [conejoninja-escpos](https://github.com/conejoninja/go-escpos)
 
-func Open(name string) (*Printer, error) 
-    zapi: func OpenPrinter(name *uint16, h *syscall.Handle, defaults uintptr) (err error) 
+## examples ##
 
-func (p *Printer) StartRawDocument(name string) error 
-    func (p *Printer) DriverInfo() (*DriverInfo, error) 
-        zapi: func GetPrinterDriver(h syscall.Handle, env *uint16, level uint32, di *byte, n uint32, needed *uint32) (err error) 
-            func (p *Printer) StartDocument(name, datatype string) error 
-                zapi: func StartDocPrinter(h syscall.Handle, level uint32, docinfo *DOC_INFO_1) (err error) 
+### USB Windows ###
+```go
+package main
+import "github.com/akka-null/escpos"
 
-func (p *Printer) Write(b []byte) (int, error) 
-    zapi: func WritePrinter(h syscall.Handle, buf *byte, bufN uint32, written *uint32) (err error) 
+func main() {
 
-func (p *Printer) EndDocument() error 
-    zapi: func EndDocPrinter(h syscall.Handle) (err error) 
+    // Printer Name
+	printer, err := escpos.NewWindowsPrinter("R80160")
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	defer printer.Close()
 
-func (p *Printer) Close() error 
-    zapi: func ClosePrinter(h syscall.Handle) (err error) 
+	printer.Init()
+	printer.Write("akka\n how are you")
+	printer.Linefeed()
+	printer.SetReverse(1)
+	printer.Write("Hello World!")
+	printer.Linefeed()
+	printer.Cut()
+	printer.End()
+}
+```
 
+### over Network ###
 
-## zapi.go
-func OpenPrinter(name *uint16, h *syscall.Handle, defaults uintptr) (err error) 
-func GetPrinterDriver(h syscall.Handle, env *uint16, level uint32, di *byte, n uint32, needed *uint32) (err error) 
-func StartDocPrinter(h syscall.Handle, level uint32, docinfo *DOC_INFO_1) (err error) 
-func WritePrinter(h syscall.Handle, buf *byte, bufN uint32, written *uint32) (err error) 
-func EndDocPrinter(h syscall.Handle) (err error) 
-func ClosePrinter(h syscall.Handle) (err error) 
+```go
+package main
+
+import( 
+    "net"
+    "github.com/akka-null/escpos"
+    )
+
+func main() {
+	socket, err := net.Dial("tcp", "192.168.100.50:9100")
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	defer socket.Close()
+	printer := escpos.New(socket)
+
+	printer.Init()
+	printer.Write("akka\n how are you")
+	printer.Linefeed()
+	printer.SetReverse(1)
+	printer.Write("Hello World!")
+	printer.Linefeed()
+	printer.Cut()
+	printer.End()
+}
+```
