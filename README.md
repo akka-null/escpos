@@ -1,3 +1,17 @@
+# ⚠️ Disclaimer
+
+This is a personal project created for **learning purposes** only.  
+It is **not fully tested** and may contain bugs or incomplete features.  
+**Use at your own risk.**
+
+## Installation ##
+
+Install the package via the following:
+
+```bash
+    go get -u github.com/akka-null/escpos
+```
+
 # escpos #
 This is a simple [Golang](http://www.golang.org/project) package that provides
 [ESC-POS](https://en.wikipedia.org/wiki/ESC/P) library functions to help with
@@ -8,6 +22,7 @@ This project is heavily based on the following GitHub repos:
 - [kenshaw-escpos](https://github.com/kenshaw/escpos)
 - [alexbrainman-printer](https://github.com/alexbrainman/printer)
 - [conejoninja-escpos](https://github.com/conejoninja/go-escpos)
+
 
 ## examples ##
 
@@ -66,3 +81,7 @@ func main() {
 	printer.End()
 }
 ```
+
+# TODO:
+- [] learn how to generate typescript types definition so we can use this lib with [wails](https://wails.io/)
+- [] learn about raster and how to deal with images

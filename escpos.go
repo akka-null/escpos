@@ -4,7 +4,11 @@
 package escpos
 
 import (
-	"encoding/base64"
+	// NOTE: we don't need this for now (we are not printing images in LHC)
+	// will see how it goes
+	// TODO: find solution for wails to generate encoding/base64 typescript types definition
+	// "encoding/base64"
+
 	"fmt"
 	"io"
 	"log"
@@ -519,6 +523,7 @@ func (e *Printer) gSend(m byte, fn byte, data []byte) {
 }
 
 // write an image
+/* NOTE: wails can't generate encoding/based64 typescript types definitions we can't use image for now(we don't need to in LHC)
 func (e *Printer) Image(params map[string]string, data string) {
 	// send alignment to printer
 	if align, ok := params["align"]; ok {
@@ -577,6 +582,7 @@ func (e *Printer) Image(params map[string]string, data string) {
 	e.gSend(byte('0'), byte('2'), []byte{})
 
 }
+	*/
 
 // write a "node" to the printer
 func (e *Printer) WriteNode(name string, params map[string]string, data string) {
@@ -599,8 +605,10 @@ func (e *Printer) WriteNode(name string, params map[string]string, data string) 
 		e.FeedAndCut(params)
 	case "pulse":
 		e.Pulse()
-	case "image":
-		e.Image(params, data)
+	// NOTE: wails can't generate typescript types definition for (encoding/base64)
+	// TODO: uncomment this wehen we solve wail problem 
+	// case "image":
+	// 	e.Image(params, data)
 	}
 }
 
